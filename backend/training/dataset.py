@@ -1,6 +1,8 @@
+import os
 from collections import defaultdict
 import random
 
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
 from datasets import load_dataset
 from torch.utils.data import Dataset, DataLoader, Subset
 from torchvision import transforms

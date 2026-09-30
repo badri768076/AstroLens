@@ -4,48 +4,56 @@ import { useState } from "react";
 import Link from "next/link";
 
 export default function DatasetsPage() {
-  const [selectedTab, setSelectedTab] = useState<"plates" | "surveys">("plates");
+  const [selectedTab, setSelectedTab] = useState<"specimens" | "surveys">("specimens");
 
   const catalogPlates = [
     {
-      catalogId: "PLATE-01",
-      archetype: "Smooth Round",
-      scientificName: "Elliptical Galaxy (Hubble Type E0-E1)",
+      classIndex: "01",
+      archetype: "SMOOTH ROUND",
+      scientificName: "Elliptical Galaxy (Hubble Type E0–E1)",
       imageUrl: "/samples/smooth_round_sample_1.png",
       filterBand: "SDSS Optical r-band",
       dimensions: "224 × 224 px",
-      features: "Radially symmetric surface brightness distribution, dense stellar nucleus, absence of star-forming spiral arms.",
-      stellarPop: "Population II / Old red giant stars",
+      features: "Radially symmetric surface brightness distribution following de Vaucouleurs profile, dense stellar nucleus, absence of star-forming spiral arms or cold dust lanes.",
+      stellarPop: "Population II / Old red giant stars, low interstellar dust attenuation.",
+      axialRatio: "b/a ≈ 0.95 – 1.00",
+      sampleCount: "2,500 Curated Specimens",
     },
     {
-      catalogId: "PLATE-02",
-      archetype: "Smooth Cigar",
-      scientificName: "Prolate Elliptical (Hubble Type E5-E7)",
+      classIndex: "02",
+      archetype: "SMOOTH CIGAR",
+      scientificName: "Prolate Elliptical (Hubble Type E5–E7)",
       imageUrl: "/samples/smooth_cigar_sample_1.png",
       filterBand: "SDSS Optical g/r/i-band",
       dimensions: "224 × 224 px",
-      features: "Strongly elongated elliptical morphology with axial ratio b/a < 0.5, uniform stellar halo.",
-      stellarPop: "Older stellar population, minimal cold interstellar gas",
+      features: "Strongly elongated elliptical morphology with axial ratio b/a < 0.5, uniform extended stellar halo, smooth surface brightness gradient lacking disk substructure.",
+      stellarPop: "Older stellar population, minimal cold neutral hydrogen gas reservoir.",
+      axialRatio: "b/a ≈ 0.35 – 0.50",
+      sampleCount: "2,500 Curated Specimens",
     },
     {
-      catalogId: "PLATE-03",
-      archetype: "Edge-On Disk",
+      classIndex: "03",
+      archetype: "EDGE-ON DISK",
       scientificName: "Lenticular / Edge-On Spiral (S0 / Sa)",
       imageUrl: "/samples/edge_on_disk_sample_1.png",
-      filterBand: "SDSS Multi-band Cutout",
+      filterBand: "SDSS Multi-band Optical Cutout",
       dimensions: "224 × 224 px",
-      features: "Prominent linear dust lane absorbing optical continuum along the disk midplane, central spheroid bulge.",
-      stellarPop: "Mixed population with active dust attenuation",
+      features: "Prominent linear dust lane absorbing optical continuum along the disk midplane, central spheroid bulge, high inclination angle approaching 90 degrees.",
+      stellarPop: "Mixed population: older bulge stars with active dust extinction in the disk plane.",
+      axialRatio: "b/a < 0.25 (High Inclination)",
+      sampleCount: "2,500 Curated Specimens",
     },
     {
-      catalogId: "PLATE-04",
-      archetype: "Unbarred Spiral",
+      classIndex: "04",
+      archetype: "UNBARRED SPIRAL",
       scientificName: "Grand Design Spiral (SA / Sc)",
       imageUrl: "/samples/unbarred_spiral_sample_1.png",
       filterBand: "SDSS DR17 Composite",
       dimensions: "224 × 224 px",
-      features: "Prominent rotating spiral arms originating from the central nucleus, active star-forming H II ionization regions.",
-      stellarPop: "Population I / Young hot OB stars in spiral arms",
+      features: "Prominent rotating spiral arms originating directly from the central nucleus without an intermediate stellar bar, active star-forming H II ionization regions.",
+      stellarPop: "Population I / Young hot OB stars in spiral arms, cold interstellar dust lanes.",
+      axialRatio: "Face-on to Intermediate Inclination",
+      sampleCount: "2,500 Curated Specimens",
     },
   ];
 
@@ -80,40 +88,38 @@ export default function DatasetsPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-[#020306] text-zinc-100 py-8 px-4 sm:px-6 font-mono text-xs">
-      <div className="max-w-[1600px] mx-auto space-y-6">
-        {/* Archive Header */}
-        <div className="border-b border-zinc-800 pb-4 flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 text-cyan-400 text-[11px] mb-1">
-              <span className="w-2 h-2 rounded-full bg-cyan-400" />
-              <span className="font-bold tracking-wider uppercase">ASTRONOMICAL DATA ARCHIVE</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase">
-              Observation Catalogs & Reference Plates
+    <main className="min-h-screen bg-[#010204] text-zinc-100 py-8 px-4 sm:px-6 font-mono text-xs select-none">
+      <div className="max-w-[1720px] mx-auto space-y-10">
+        {/* Header */}
+        <div className="border-b border-white/[0.08] pb-6 flex flex-col md:flex-row md:items-baseline justify-between gap-4">
+          <div className="space-y-1">
+            <span className="text-[10px] text-zinc-500 uppercase tracking-[0.2em]">
+              Astronomical Morphology Archive
+            </span>
+            <h1 className="text-3xl font-light text-white tracking-tight">
+              Galaxy Zoo & SDSS Morphological Cutouts
             </h1>
+            <p className="text-xs text-zinc-400 font-sans max-w-3xl pt-1">
+              Curated astronomical survey plates illustrating the fundamental celestial morphological archetypes
+              used for training and benchmark calibration.
+            </p>
           </div>
 
-          {/* Tab Selector */}
-          <div className="flex border border-zinc-800 bg-[#03060c] p-0.5">
+          <div className="flex border border-white/10 p-1 bg-white/[0.02]">
             <button
               type="button"
-              onClick={() => setSelectedTab("plates")}
-              className={`px-3 py-1.5 uppercase tracking-wider font-bold transition ${
-                selectedTab === "plates"
-                  ? "bg-cyan-950/60 text-cyan-300 border border-cyan-500/40"
-                  : "text-zinc-500 hover:text-white"
+              onClick={() => setSelectedTab("specimens")}
+              className={`px-3 py-1.5 uppercase tracking-wider text-[11px] transition ${
+                selectedTab === "specimens" ? "bg-white text-black font-semibold" : "text-zinc-400 hover:text-white"
               }`}
             >
-              Morphological Plates
+              Morphology Specimens
             </button>
             <button
               type="button"
               onClick={() => setSelectedTab("surveys")}
-              className={`px-3 py-1.5 uppercase tracking-wider font-bold transition ${
-                selectedTab === "surveys"
-                  ? "bg-cyan-950/60 text-cyan-300 border border-cyan-500/40"
-                  : "text-zinc-500 hover:text-white"
+              className={`px-3 py-1.5 uppercase tracking-wider text-[11px] transition ${
+                selectedTab === "surveys" ? "bg-white text-black font-semibold" : "text-zinc-400 hover:text-white"
               }`}
             >
               Survey Catalogs
@@ -121,105 +127,115 @@ export default function DatasetsPage() {
           </div>
         </div>
 
-        {/* Tab 1: Morphological Plates Archive */}
-        {selectedTab === "plates" ? (
-          <div className="border border-zinc-800 bg-[#020409] divide-y divide-zinc-800">
+        {/* TAB 1: SPECIMEN ARCHIVE */}
+        {selectedTab === "specimens" && (
+          <div className="space-y-12">
             {catalogPlates.map((plate) => (
-              <div key={plate.catalogId} className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-                {/* Large Dominant Photographic Plate Image */}
-                <div className="lg:col-span-4 bg-black border border-zinc-800 p-2 flex items-center justify-center">
-                  <div className="relative w-full h-56 sm:h-64 overflow-hidden border border-zinc-900 flex items-center justify-center bg-[#010204]">
+              <article
+                key={plate.classIndex}
+                className="border border-white/[0.08] bg-[#020306] p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
+              >
+                {/* Large Astronomical Specimen Image (4 cols) */}
+                <div className="lg:col-span-4 flex flex-col items-center justify-center">
+                  <div className="relative w-full aspect-square max-w-[320px] bg-black border border-white/15 p-2 shadow-2xl">
                     <img
                       src={plate.imageUrl}
                       alt={plate.archetype}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain filter contrast-125"
                     />
-                    <div className="absolute top-2 left-2 bg-black/85 border border-zinc-800 px-2 py-0.5 text-[10px] text-cyan-400 font-bold">
-                      {plate.catalogId}
+                    <div className="absolute top-3 left-3 bg-black/80 px-2 py-0.5 border border-white/15 text-[9px] text-zinc-400">
+                      CLASS {plate.classIndex}
                     </div>
-                    <div className="absolute bottom-2 right-2 bg-black/85 border border-zinc-800 px-2 py-0.5 text-[9px] text-zinc-400">
-                      {plate.dimensions}
-                    </div>
+                  </div>
+                  <div className="mt-3 text-[10px] text-zinc-500 font-mono">
+                    {plate.filterBand} • {plate.dimensions}
                   </div>
                 </div>
 
-                {/* Plate Astrometric Ledger & Description */}
-                <div className="lg:col-span-8 space-y-3">
-                  <div className="border-b border-zinc-800 pb-2">
-                    <span className="text-[10px] text-cyan-400 uppercase tracking-widest block">
-                      MORPHOLOGY ARCHETYPE
+                {/* Scientific Description & Metrics (8 cols) */}
+                <div className="lg:col-span-8 space-y-5">
+                  <div className="border-b border-white/[0.08] pb-3">
+                    <span className="text-[10px] text-cyan-400 uppercase tracking-[0.2em] font-medium">
+                      Morphology Class {plate.classIndex}
                     </span>
-                    <h2 className="text-xl font-bold text-white uppercase mt-0.5">
+                    <h2 className="text-2xl sm:text-3xl font-light text-white tracking-tight mt-1">
                       {plate.archetype}
                     </h2>
-                    <p className="text-zinc-400 text-xs mt-0.5">{plate.scientificName}</p>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px] pt-1">
-                    <div className="border border-zinc-800/80 bg-[#04060c] p-2.5">
-                      <span className="text-zinc-500 block text-[9px] uppercase">SURVEY FILTER</span>
-                      <span className="text-zinc-200">{plate.filterBand}</span>
-                    </div>
-                    <div className="border border-zinc-800/80 bg-[#04060c] p-2.5">
-                      <span className="text-zinc-500 block text-[9px] uppercase">STELLAR POPULATION</span>
-                      <span className="text-zinc-200">{plate.stellarPop}</span>
+                    <div className="text-xs text-zinc-400 font-sans mt-0.5">
+                      {plate.scientificName}
                     </div>
                   </div>
 
-                  <div className="pt-2 font-sans text-xs text-zinc-400 leading-relaxed">
-                    <span className="font-mono text-zinc-500 text-[10px] uppercase block mb-0.5">MORPHOLOGICAL FEATURES:</span>
-                    {plate.features}
+                  <div className="space-y-2 text-xs font-sans text-zinc-300 leading-relaxed">
+                    <div className="font-mono text-[10px] uppercase text-zinc-500">
+                      Physical Dynamics & Morphology
+                    </div>
+                    <p>{plate.features}</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-white/[0.06] text-xs font-mono">
+                    <div>
+                      <span className="text-zinc-500 uppercase text-[9px] block">Stellar Population</span>
+                      <span className="text-zinc-300 text-[11px] font-sans">{plate.stellarPop}</span>
+                    </div>
+                    <div>
+                      <span className="text-zinc-500 uppercase text-[9px] block">Axial Ratio</span>
+                      <span className="text-white text-[11px]">{plate.axialRatio}</span>
+                    </div>
+                    <div>
+                      <span className="text-zinc-500 uppercase text-[9px] block">Training Volume</span>
+                      <span className="text-cyan-300 text-[11px]">{plate.sampleCount}</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+
+        {/* TAB 2: SURVEY CATALOGS */}
+        {selectedTab === "surveys" && (
+          <div className="border border-white/[0.08] bg-[#020306] divide-y divide-white/[0.06]">
+            {surveyCatalogs.map((survey) => (
+              <div key={survey.name} className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+                <div className="lg:col-span-4">
+                  <h3 className="text-base text-white font-medium">{survey.name}</h3>
+                  <div className="text-xs text-zinc-400 font-sans mt-0.5">{survey.source}</div>
+                </div>
+
+                <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
+                  <div>
+                    <span className="text-zinc-500 uppercase text-[9px] block">Scope</span>
+                    <span className="text-zinc-300">{survey.scope}</span>
+                  </div>
+                  <div>
+                    <span className="text-zinc-500 uppercase text-[9px] block">Records</span>
+                    <span className="text-white">{survey.sampleCount}</span>
+                  </div>
+                  <div>
+                    <span className="text-zinc-500 uppercase text-[9px] block">Wavelengths</span>
+                    <span className="text-zinc-300">{survey.bands}</span>
+                  </div>
+                  <div>
+                    <span className="text-zinc-500 uppercase text-[9px] block">Instrument Role</span>
+                    <span className="text-cyan-300">{survey.role}</span>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-        ) : (
-          /* Tab 2: Survey Catalogs */
-          <div className="border border-zinc-800 bg-[#020409] p-4 sm:p-6 space-y-4">
-            <div className="pb-3 border-b border-zinc-800 flex items-center justify-between">
-              <span className="text-zinc-400 font-bold uppercase tracking-wider">
-                LINKED ASTRONOMICAL SURVEYS & DATABASES
-              </span>
-              <span className="text-zinc-500 text-[10px]">VERIFIED GROUND TRUTH</span>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs divide-y divide-zinc-800">
-                <thead>
-                  <tr className="text-zinc-500 text-[10px]">
-                    <th className="pb-3">Survey Archive</th>
-                    <th className="pb-3">Target Scope</th>
-                    <th className="pb-3">Observation Volume</th>
-                    <th className="pb-3">Filter Wavelengths</th>
-                    <th className="pb-3">Scientific Authority</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-900 text-zinc-300">
-                  {surveyCatalogs.map((s, idx) => (
-                    <tr key={idx} className="hover:bg-white/[0.02]">
-                      <td className="py-3 font-bold text-white">
-                        {s.name}
-                        <span className="block text-[10px] text-cyan-400 font-normal">{s.role}</span>
-                      </td>
-                      <td className="py-3 text-zinc-400">{s.scope}</td>
-                      <td className="py-3 text-white">{s.sampleCount}</td>
-                      <td className="py-3 text-zinc-400">{s.bands}</td>
-                      <td className="py-3 text-zinc-500 text-[11px]">{s.source}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
         )}
 
-        <div className="pt-2 flex justify-end">
+        {/* BOTTOM ACTION */}
+        <div className="border-t border-white/[0.08] pt-6 flex justify-between items-center text-xs">
+          <span className="text-zinc-500 font-sans">
+            Ready to test live inference on your own astronomical plates?
+          </span>
           <Link
             href="/analyze"
-            className="px-5 py-2.5 border border-cyan-400 bg-cyan-500 hover:bg-cyan-400 text-zinc-950 font-bold uppercase tracking-wider transition"
+            className="px-4 py-2 bg-white hover:bg-zinc-200 text-black uppercase tracking-wider font-semibold transition"
           >
-            Stage Observation in Workstation →
+            Open Observation Canvas →
           </Link>
         </div>
       </div>

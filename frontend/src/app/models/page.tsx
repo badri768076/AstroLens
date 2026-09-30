@@ -8,11 +8,11 @@ export default function ModelsPage() {
 
   const modelsData = {
     "fastai-vit": {
-      name: "FastAI + ViT Deep Astronomical Identifier (Production Pipeline)",
-      instrumentRole: "Dual-Stage Deep Classifier & Vision Transformer Metric Space",
-      architecture: "FastAI ConvNet Trunk + Vision Transformer (ViT-Base-Patch16-224)",
+      name: "FastAI Classifier + ViT Metric Hypersphere (Production Architecture)",
+      instrumentRole: "Hierarchical Multi-Stage Deep Astronomical Identifier",
+      architecture: "FastAI Deep Convolutional Trunk + Vision Transformer (ViT-Base-Patch16-224)",
       weights: "Interstellar Pretrained + ViT High-Dimensional Patch Embeddings",
-      strategy: "Two-stage hierarchical inference: broad taxonomy classification followed by 768-D ViT reference catalog retrieval.",
+      strategy: "Two-stage hierarchical inference: broad morphology taxonomy classification followed by 768-D cosine metric reference catalog retrieval.",
       totalParams: "86.4M ViT + 11.2M Classifier",
       trainableParams: "Cosine Metric Indexing",
       accuracy: "Production",
@@ -99,118 +99,158 @@ export default function ModelsPage() {
   const current = modelsData[selectedModel];
 
   return (
-    <main className="min-h-screen bg-[#020306] text-zinc-100 py-8 px-4 sm:px-6 font-mono text-xs">
-      <div className="max-w-[1600px] mx-auto space-y-6">
-        {/* Lab Header */}
-        <div className="border-b border-zinc-800 pb-4 flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 text-cyan-400 text-[11px] mb-1">
-              <span className="w-2 h-2 rounded-full bg-cyan-400" />
-              <span className="font-bold tracking-wider uppercase">MODEL & INSTRUMENT LABORATORY</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase">
-              Calibration & Architecture Benchmarks
+    <main className="min-h-screen bg-[#010204] text-zinc-100 py-8 px-4 sm:px-6 font-mono text-xs select-none">
+      <div className="max-w-[1720px] mx-auto space-y-10">
+        {/* Editorial Paper Header */}
+        <div className="border-b border-white/[0.08] pb-6 flex flex-col md:flex-row md:items-baseline justify-between gap-4">
+          <div className="space-y-1">
+            <span className="text-[10px] text-zinc-500 uppercase tracking-[0.2em]">
+              Experimental Laboratory & Evaluation Record
+            </span>
+            <h1 className="text-3xl font-light text-white tracking-tight">
+              Astronomical Neural Model Comparison
             </h1>
+            <p className="text-xs text-zinc-400 font-sans max-w-3xl pt-1">
+              Comparative empirical evaluation across the production dual-stage FastAI + Vision Transformer pipeline
+              and controlled Galaxy Zoo morphological convolutional benchmarks.
+            </p>
           </div>
 
-          <div className="flex items-center gap-3 text-[11px] text-zinc-400">
-            <span>INFERENCE REGISTRY: ACTIVE</span>
-            <span>SIMBAD ASTROMETRY LINKED</span>
+          <div className="flex items-center gap-2 border border-white/10 p-1 bg-white/[0.02]">
+            <button
+              type="button"
+              onClick={() => setSelectedModel("fastai-vit")}
+              className={`px-3 py-1.5 uppercase tracking-wider text-[11px] transition ${
+                selectedModel === "fastai-vit" ? "bg-white text-black font-semibold" : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              FastAI + ViT (Live)
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedModel("resnet-finetuned")}
+              className={`px-3 py-1.5 uppercase tracking-wider text-[11px] transition ${
+                selectedModel === "resnet-finetuned" ? "bg-white text-black font-semibold" : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              Fine-Tuned ResNet18
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedModel("resnet-frozen")}
+              className={`px-3 py-1.5 uppercase tracking-wider text-[11px] transition ${
+                selectedModel === "resnet-frozen" ? "bg-white text-black font-semibold" : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              Frozen Baseline
+            </button>
           </div>
         </div>
 
-        {/* Instrument Selector Bar */}
-        <div className="flex border border-zinc-800 bg-[#03060c] p-1 gap-1 overflow-x-auto">
-          {(Object.keys(modelsData) as Array<keyof typeof modelsData>).map((key) => {
-            const m = modelsData[key];
-            const isSelected = selectedModel === key;
-            return (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setSelectedModel(key)}
-                className={`px-4 py-2 border text-left transition whitespace-nowrap ${
-                  isSelected
-                    ? "border-cyan-400 bg-cyan-950/40 text-cyan-200"
-                    : "border-transparent text-zinc-400 hover:text-white hover:bg-white/5"
-                }`}
-              >
-                <div className="font-bold uppercase tracking-wider">{m.name.split(" (")[0]}</div>
-                <div className="text-[10px] text-zinc-500">{m.status}</div>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Connected Calibration Station Layout */}
-        <div className="border border-zinc-800 bg-[#03050a] divide-y divide-zinc-800">
-          {/* Section 1: Instrument Overview */}
-          <div className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-8 space-y-2">
-              <span className="text-[10px] text-cyan-400 uppercase tracking-widest block">
-                ACTIVE INSTRUMENT CONFIGURATION
-              </span>
-              <h2 className="text-xl font-bold text-white uppercase">{current.name}</h2>
-              <p className="text-zinc-400 font-sans text-xs leading-relaxed">{current.instrumentRole}</p>
-              <div className="pt-2 text-[11px] text-zinc-300">
-                <span className="text-zinc-500">TRAINING REGIME: </span>
-                {current.strategy}
-              </div>
-            </div>
-
-            <div className="lg:col-span-4 border-l border-zinc-800 pl-4 sm:pl-6 space-y-3">
-              <div>
-                <span className="text-zinc-500 text-[10px] block">TOTAL PARAMETERS</span>
-                <span className="text-lg font-bold text-white">{current.totalParams}</span>
-              </div>
-              <div>
-                <span className="text-zinc-500 text-[10px] block">BACKBONE / TRUNK</span>
-                <span className="text-cyan-300 font-semibold">{current.architecture}</span>
-              </div>
-              <div>
-                <span className="text-zinc-500 text-[10px] block">OPERATIONAL STATUS</span>
-                <span className="text-emerald-400 font-semibold">{current.status}</span>
-              </div>
-            </div>
+        {/* SECTION 1: ARCHITECTURAL SPECIFICATION */}
+        <section className="space-y-4">
+          <div className="text-[11px] uppercase tracking-[0.15em] text-zinc-400 border-b border-white/[0.08] pb-2">
+            Table 1. Architectural Configuration & Execution Parameters
           </div>
 
-          {/* Section 2: Visual Confusion Matrix Centerpiece */}
-          <div className="p-4 sm:p-6">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-zinc-800">
-              <span className="text-zinc-400 font-bold uppercase tracking-wider">
-                CONFUSION MATRIX & MARGINAL INTENSITIES
-              </span>
-              <span className="text-zinc-500 text-[10px]">
-                HORIZONTAL = PREDICTED • VERTICAL = TRUE ASTRONOMICAL CLASS
+          <div className="border border-white/[0.08] divide-y divide-white/[0.06] bg-[#020306]">
+            <div className="grid grid-cols-1 md:grid-cols-4 p-3 gap-2">
+              <span className="text-zinc-500 uppercase text-[10px]">Model Designation</span>
+              <span className="md:col-span-3 text-white font-medium">{current.name}</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 p-3 gap-2">
+              <span className="text-zinc-500 uppercase text-[10px]">Instrument Role</span>
+              <span className="md:col-span-3 text-zinc-300">{current.instrumentRole}</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 p-3 gap-2">
+              <span className="text-zinc-500 uppercase text-[10px]">Trunk Topology</span>
+              <span className="md:col-span-3 text-zinc-300">{current.architecture}</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 p-3 gap-2">
+              <span className="text-zinc-500 uppercase text-[10px]">Weights & Embedding</span>
+              <span className="md:col-span-3 text-zinc-300">{current.weights}</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 p-3 gap-2">
+              <span className="text-zinc-500 uppercase text-[10px]">Parameters</span>
+              <span className="md:col-span-3 text-zinc-300">
+                Total: <span className="text-white">{current.totalParams}</span> • Trainable:{" "}
+                <span className="text-white">{current.trainableParams}</span>
               </span>
             </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 p-3 gap-2">
+              <span className="text-zinc-500 uppercase text-[10px]">Strategy</span>
+              <span className="md:col-span-3 text-zinc-400 font-sans leading-relaxed">{current.strategy}</span>
+            </div>
+          </div>
+        </section>
 
-            <div className="overflow-x-auto">
-              <div className="min-w-[500px]">
-                <div className="grid grid-cols-5 gap-1.5 text-center">
-                  <div className="p-2 text-[10px] text-zinc-500 border border-transparent">Target \ Pred</div>
-                  {current.classes.map((c, i) => (
-                    <div key={i} className="p-2 border border-zinc-800 bg-[#060914] text-[10px] font-bold text-zinc-300 truncate">
-                      {c}
-                    </div>
+        {/* SECTION 2: CLASS METRICS & CONFUSION MATRIX */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Class Breakdown Table (7 cols) */}
+          <div className="lg:col-span-7 space-y-4">
+            <div className="text-[11px] uppercase tracking-[0.15em] text-zinc-400 border-b border-white/[0.08] pb-2">
+              Table 2. Per-Class Empirical Validation Performance
+            </div>
+
+            <div className="border border-white/[0.08] bg-[#020306] overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-white/[0.08] text-[10px] text-zinc-500 uppercase bg-white/[0.01]">
+                    <th className="p-3">Celestial Class</th>
+                    <th className="p-3">Precision</th>
+                    <th className="p-3">Recall</th>
+                    <th className="p-3">F1 Score</th>
+                    <th className="p-3">Reference Support</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/[0.04]">
+                  {current.classMetrics.map((row) => (
+                    <tr key={row.class_name} className="hover:bg-white/[0.02]">
+                      <td className="p-3 text-white font-medium">{row.class_name}</td>
+                      <td className="p-3 text-zinc-300">{row.precision}</td>
+                      <td className="p-3 text-zinc-300">{row.recall}</td>
+                      <td className="p-3 text-white font-semibold">{row.f1}</td>
+                      <td className="p-3 text-zinc-400">{row.support}</td>
+                    </tr>
                   ))}
+                </tbody>
+              </table>
+            </div>
 
-                  {current.classes.map((trueClass, rIdx) => (
-                    <div key={rIdx} className="contents">
-                      <div className="p-2 text-left border border-zinc-800 bg-[#060914] text-[10px] font-bold text-zinc-300 truncate flex items-center">
-                        {trueClass}
-                      </div>
-                      {current.cm[rIdx].map((val, cIdx) => {
+            <div className="pt-2 text-[10px] text-zinc-500 font-sans">
+              *Evaluated against held-out validation specimens with 224×224 normalized multi-band tensors.
+            </div>
+          </div>
+
+          {/* Confusion Matrix (5 cols) */}
+          <div className="lg:col-span-5 space-y-4">
+            <div className="text-[11px] uppercase tracking-[0.15em] text-zinc-400 border-b border-white/[0.08] pb-2">
+              Figure 1. Normalized Empirical Confusion Matrix
+            </div>
+
+            <div className="border border-white/[0.08] bg-[#020306] p-4">
+              <div className="text-[10px] text-zinc-500 mb-3 text-center uppercase tracking-wider">
+                Predicted Class →
+              </div>
+
+              <div className="space-y-1">
+                {current.cm.map((row, rIdx) => (
+                  <div key={rIdx} className="flex items-center gap-1.5">
+                    <span className="w-24 text-[9px] text-zinc-400 truncate text-right pr-2">
+                      {current.classes[rIdx]}
+                    </span>
+                    <div className="flex-1 grid grid-cols-4 gap-1.5">
+                      {row.map((val, cIdx) => {
                         const isDiag = rIdx === cIdx;
                         return (
                           <div
                             key={cIdx}
-                            className={`p-3 border font-bold text-sm transition ${
+                            className={`p-2.5 text-center font-mono text-xs border ${
                               isDiag
-                                ? "bg-cyan-950/70 border-cyan-500/60 text-cyan-200 shadow-[0_0_15px_rgba(6,182,212,0.2)]"
+                                ? "bg-white/10 border-white/30 text-white font-bold"
                                 : val > 0
-                                ? "bg-zinc-900/40 border-zinc-800 text-zinc-400"
-                                : "bg-transparent border-zinc-900 text-zinc-700"
+                                ? "bg-red-950/20 border-red-500/20 text-red-300"
+                                : "bg-black border-white/[0.03] text-zinc-600"
                             }`}
                           >
                             {val}
@@ -218,52 +258,28 @@ export default function ModelsPage() {
                         );
                       })}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-white/[0.06] text-[10px] text-zinc-500 flex justify-between">
+                <span>↓ True Reference Class</span>
+                <span className="text-zinc-400 font-medium">Diagonal = Correct Identifications</span>
               </div>
             </div>
           </div>
+        </section>
 
-          {/* Section 3: Per-Class Precision Ledger */}
-          <div className="p-4 sm:p-6">
-            <div className="pb-3 mb-3 border-b border-zinc-800 text-zinc-400 font-bold uppercase tracking-wider">
-              PER-CLASS METRIC LEDGER
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs divide-y divide-zinc-800">
-                <thead>
-                  <tr className="text-zinc-500 text-[10px]">
-                    <th className="pb-2">Taxonomy Class</th>
-                    <th className="pb-2">Precision</th>
-                    <th className="pb-2">Recall</th>
-                    <th className="pb-2">F1 Score</th>
-                    <th className="pb-2">Reference Exemplar</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-900 text-zinc-300">
-                  {current.classMetrics.map((cm, idx) => (
-                    <tr key={idx} className="hover:bg-white/[0.02]">
-                      <td className="py-2.5 font-bold text-white">{cm.class_name}</td>
-                      <td className="py-2.5 text-cyan-300">{cm.precision}</td>
-                      <td className="py-2.5 text-zinc-300">{cm.recall}</td>
-                      <td className="py-2.5 text-emerald-400 font-bold">{cm.f1}</td>
-                      <td className="py-2.5 text-zinc-500">{cm.support}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer Link */}
-        <div className="pt-2 flex justify-end">
+        {/* BOTTOM ACTION */}
+        <div className="border-t border-white/[0.08] pt-6 flex justify-between items-center text-xs">
+          <span className="text-zinc-500 font-sans">
+            Ready to test live inference on unknown celestial imagery?
+          </span>
           <Link
             href="/analyze"
-            className="px-5 py-2.5 border border-cyan-400 bg-cyan-500 hover:bg-cyan-400 text-zinc-950 font-bold uppercase tracking-wider transition"
+            className="px-4 py-2 bg-white hover:bg-zinc-200 text-black uppercase tracking-wider font-semibold transition"
           >
-            Open Observation Workstation →
+            Launch Observation Canvas →
           </Link>
         </div>
       </div>

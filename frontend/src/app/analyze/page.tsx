@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AstronomicalImageViewer from "@/components/AstronomicalImageViewer";
-import CelestialSkyChart from "@/components/CelestialSkyChart";
+import ObservationViewer from "@/components/ObservationViewer";
+import ScientificProfile from "@/components/ScientificProfile";
+import SkyExplorer from "@/components/SkyExplorer";
 import ObservationArchive, { ArchivePlate } from "@/components/ObservationArchive";
-import ObservationReadout, { AnalysisResult } from "@/components/ObservationReadout";
+import { AnalysisResult } from "@/components/ObservationReadout";
 
 export default function AnalyzePage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -15,7 +16,7 @@ export default function AnalyzePage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [activePlateId, setActivePlateId] = useState<string | null>(null);
-  const [backendState, setBackendState] = useState<string>("DETECTING");
+  const [backendState, setBackendState] = useState<string>("CONNECTING");
 
   // Health check on mount
   useEffect(() => {
@@ -23,7 +24,7 @@ export default function AnalyzePage() {
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data) {
-          setBackendState(data.gpu_name || data.device || "ONLINE");
+          setBackendState(data.gpu_name || data.device || "ACTIVE");
         } else {
           setBackendState("STANDBY");
         }
@@ -115,58 +116,75 @@ export default function AnalyzePage() {
     }
   };
 
+  const resolvedName = analysis?.identification.object || analysis?.scientific_information?.name;
+  const resolvedCatalog = analysis?.scientific_information?.catalog_id;
+  const resolvedClass = analysis?.classification.class;
+  const resolvedRa = analysis?.scientific_information?.ra ?? analysis?.visualization?.ra;
+  const resolvedDec = analysis?.scientific_information?.dec ?? analysis?.visualization?.dec;
+
   return (
-    <div className="min-h-screen bg-[#020306] text-zinc-100 flex flex-col">
-      {/* COMPACT SCIENTIFIC HEADER */}
-      <header className="border-b border-zinc-800 bg-[#03060c] px-4 py-2.5 flex flex-wrap items-center justify-between text-xs font-mono">
+    <div className="min-h-screen bg-[#010204] text-zinc-100 flex flex-col">
+      {/* Minimal Instrument Subheader */}
+      <div className="border-b border-white/[0.08] bg-[#020306] px-5 py-2.5 flex flex-wrap items-center justify-between text-xs font-mono">
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
-            <span className="text-white font-bold tracking-wider uppercase">OBSERVATION WORKSTATION</span>
-          </div>
-          <span className="text-zinc-600 hidden sm:inline">|</span>
-          <span className="text-zinc-400 hidden sm:inline truncate max-w-sm">
-            {previewName ? `TARGET: ${previewName}` : "STAGE: READY"}
+          <span className="text-zinc-500 uppercase tracking-widest text-[10px]">
+            Observation Canvas
+          </span>
+          <span className="text-zinc-700">/</span>
+          <span className="text-white font-medium">
+            {previewName || "Awaiting Astronomical Plate"}
           </span>
         </div>
 
-        <div className="flex items-center gap-4 text-[11px] text-zinc-500">
+        <div className="flex items-center gap-5 text-[11px] text-zinc-500">
           <span>
-            STATUS:{" "}
-            <span className={isLoading ? "text-cyan-400" : analysis ? "text-emerald-400" : "text-zinc-400"}>
-              {isLoading ? "INFERRING..." : analysis ? "RESOLVED" : "STANDBY"}
+            STATE:{" "}
+            <span
+              className={
+                isLoading
+                  ? "text-cyan-400 font-semibold"
+                  : analysis
+                  ? "text-emerald-400 font-semibold"
+                  : "text-zinc-400"
+              }
+            >
+              {isLoading ? "ANALYZING..." : analysis ? "RESOLVED" : "STANDBY"}
             </span>
           </span>
-          <span className="hidden md:inline">
-            BACKEND: <span className="text-zinc-300">{backendState}</span>
+          <span className="hidden sm:inline">
+            ENGINE: <span className="text-zinc-300">{backendState}</span>
           </span>
-          <span className="hidden lg:inline text-zinc-600">FASTAI + VIT + SIMBAD</span>
         </div>
-      </header>
+      </div>
 
-      {/* ARCHIVAL STRIP */}
+      {/* Archival Specimen Contact Strip */}
       <ObservationArchive
         onSelectPlate={handleSelectPlate}
         activeId={activePlateId}
         isLoading={isLoading}
       />
 
-      {/* MAIN TWO-PART WORKSPACE */}
-      <main className="flex-1 max-w-[1680px] w-full mx-auto p-3 sm:p-4 space-y-4">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 items-stretch">
-          {/* PRIMARY: Astronomical Image Viewer (7 cols) */}
-          <section className="lg:col-span-7 flex flex-col">
-            <AstronomicalImageViewer
+      {/* Main Scientific Observation Stage */}
+      <main className="flex-1 max-w-[1720px] w-full mx-auto p-4 sm:p-6 space-y-6">
+        {/* HERO SECTION: Photographic Observation & Scientific Profile */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+          {/* Photographic Observation Hero Canvas (7 cols on large desktop, dominates viewport) */}
+          <div className="lg:col-span-8 flex flex-col">
+            <ObservationViewer
               imageUrl={previewUrl}
-              imageName={previewName}
+              objectName={resolvedName}
+              catalogId={resolvedCatalog}
+              classification={resolvedClass}
+              ra={resolvedRa}
+              dec={resolvedDec}
               onFileSelect={handleFileSelect}
               isLoading={isLoading}
             />
-          </section>
+          </div>
 
-          {/* SECONDARY: Observation Readout (5 cols) */}
-          <section className="lg:col-span-5 flex flex-col">
-            <ObservationReadout
+          {/* Scientific Profile Rail (4 cols beside image, direct image->object->data communication) */}
+          <div className="lg:col-span-4 flex flex-col">
+            <ScientificProfile
               analysis={analysis}
               isLoading={isLoading}
               activeStage={activeStage}
@@ -174,17 +192,17 @@ export default function AnalyzePage() {
               canExecute={Boolean(selectedFile)}
               errorMsg={errorMsg}
             />
-          </section>
-        </div>
+          </div>
+        </section>
 
-        {/* CELESTIAL SKY ATLAS SECTION */}
+        {/* CELESTIAL POSITION EXPLORATION SECTION */}
         <section className="pt-2">
-          <CelestialSkyChart
-            objectName={analysis?.identification.object || analysis?.scientific_information?.name}
-            catalogId={analysis?.scientific_information?.catalog_id}
+          <SkyExplorer
+            objectName={resolvedName}
+            catalogId={resolvedCatalog}
             objectType={analysis?.scientific_information?.type}
-            ra={analysis?.scientific_information?.ra ?? analysis?.visualization?.ra}
-            dec={analysis?.scientific_information?.dec ?? analysis?.visualization?.dec}
+            ra={resolvedRa}
+            dec={resolvedDec}
           />
         </section>
       </main>

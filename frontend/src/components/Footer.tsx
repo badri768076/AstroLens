@@ -2,40 +2,43 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-[#020408] py-10 text-zinc-400 text-xs">
-      <div className="mx-auto max-w-7xl px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-mono font-bold tracking-widest text-white uppercase text-sm">
+    <footer className="border-t border-white/[0.08] bg-[#010204] py-10 text-zinc-400 text-xs select-none">
+      <div className="mx-auto max-w-[1720px] px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <span className="font-semibold tracking-[0.2em] text-white uppercase text-sm">
               ASTROLENS
             </span>
-            <span className="text-[10px] font-mono text-cyan-400 border border-cyan-800/40 bg-cyan-950/30 px-1.5 py-0.5 rounded">
-              OBSERVATORY WORKSTATION
+            <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider">
+              ASTRONOMICAL EXPLORATION INSTRUMENT
             </span>
           </div>
-          <p className="mt-2 text-zinc-400 max-w-xl text-xs leading-relaxed">
-            AI-powered astronomical image analysis system. Identifies celestial objects, performs morphological classification, resolves catalog references via SIMBAD astrometry, and visualizes sky coordinates.
+          <p className="text-zinc-500 max-w-xl text-xs font-sans leading-relaxed">
+            Scientific image exploration instrument connecting optical telescope exposures with deep morphological
+            classification, Vision Transformer metric retrieval, and CDS SIMBAD equatorial astrometry.
           </p>
-          <div className="mt-2 text-[10px] font-mono text-zinc-500 flex items-center gap-4">
+          <div className="text-[10px] font-mono text-zinc-600 flex items-center gap-4">
             <span>EPOCH: J2000.0</span>
-            <span>SYSTEM: ICRS / EQUATORIAL</span>
-            <span>SIMBAD ASTROMETRY</span>
+            <span>•</span>
+            <span>SYSTEM: ICRS EQUATORIAL</span>
+            <span>•</span>
+            <span>CDS SIMBAD ASTROMETRY</span>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-5 font-mono text-xs text-zinc-400">
-          <Link href="/" className="hover:text-cyan-300 transition">Explore</Link>
-          <Link href="/analyze" className="hover:text-cyan-300 transition">Analyze</Link>
-          <Link href="/models" className="hover:text-cyan-300 transition">Models</Link>
-          <Link href="/datasets" className="hover:text-cyan-300 transition">Datasets</Link>
-          <Link href="/methodology" className="hover:text-cyan-300 transition">Methodology</Link>
+        <div className="flex flex-wrap items-center gap-6 font-mono text-xs">
+          <Link href="/" className="hover:text-white transition-colors">Explore</Link>
+          <Link href="/analyze" className="hover:text-white transition-colors">Analyze</Link>
+          <Link href="/models" className="hover:text-white transition-colors">Models</Link>
+          <Link href="/datasets" className="hover:text-white transition-colors">Archive</Link>
+          <Link href="/methodology" className="hover:text-white transition-colors">Methodology</Link>
           <a
             href="http://localhost:8000/docs"
             target="_blank"
             rel="noreferrer"
-            className="rounded border border-white/15 bg-white/5 px-2.5 py-1 text-zinc-300 hover:text-white hover:border-cyan-500/40 transition"
+            className="border border-white/10 hover:border-white/30 px-3 py-1 text-zinc-400 hover:text-white transition-colors"
           >
-            API Schema Docs ↗
+            API Docs ↗
           </a>
         </div>
       </div>

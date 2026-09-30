@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AstroLens — Deep Learning Astronomical Object Analysis",
-  description: "An AI-powered Deep Learning system for interactive astronomical object analysis, galaxy morphology classification, transfer learning, vector similarity search, anomaly detection, and Grad-CAM explainability.",
+  title: "AstroLens — Astronomical Image Analysis System",
+  description: "AI-powered astronomical observation analysis. Upload deep-space photography to classify morphology, identify specific celestial targets, resolve astronomical coordinates, and explore the universe.",
 };
 
 export default function RootLayout({
@@ -29,7 +29,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col bg-[#06080d] text-zinc-100 font-sans selection:bg-cyan-500/20 selection:text-cyan-200">
+      <body className="min-h-full flex flex-col bg-[#03060c] text-zinc-100 font-sans selection:bg-cyan-500/25 selection:text-cyan-100">
         <Navbar />
         <div className="flex-1">
           {children}

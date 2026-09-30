@@ -1,8 +1,68 @@
+import sys
+import types
+import pathlib
+from pathlib import Path
 from typing import Dict, Any, List
+
 import torch
 import torch.nn.functional as F
 from PIL import Image
 from torchvision import transforms
+
+# --------------------------------------------------
+# Cross-version & OS compatibility patches for pickle
+# --------------------------------------------------
+# Fix 1: Models exported with Python 3.13+ use pathlib._local (Path, PosixPath)
+if not hasattr(pathlib, "__path__"):
+    pathlib.__path__ = []
+
+if "pathlib._local" not in sys.modules:
+    _pathlib_local = types.ModuleType("pathlib._local")
+    _pathlib_local.Path = pathlib.Path
+    _pathlib_local.PosixPath = pathlib.WindowsPath if sys.platform == "win32" else pathlib.PosixPath
+    _pathlib_local.WindowsPath = pathlib.WindowsPath
+    sys.modules["pathlib._local"] = _pathlib_local
+    pathlib._local = _pathlib_local
+
+# Fix 2: PosixPath unpickling on Windows systems
+if sys.platform == "win32":
+    pathlib.PosixPath = pathlib.WindowsPath
+
+from fastai.learner import load_learner
+from fastai.vision.core import PILImage
+
+
+# --------------------------------------------------
+# Model configuration
+# --------------------------------------------------
+
+MODEL_PATH = Path(__file__).resolve().parents[2] / "models" / "interstellar.pkl"
+
+
+# --------------------------------------------------
+# Load model once when backend starts
+# --------------------------------------------------
+
+learn = load_learner(MODEL_PATH)
+
+
+# --------------------------------------------------
+# Astronomical object classification
+# --------------------------------------------------
+
+def classify_astronomical_object(image_path: str):
+    image = PILImage.create(image_path)
+    prediction, prediction_index, probabilities = learn.predict(image)
+
+    return {
+        "class": str(prediction),
+        "confidence": float(probabilities[prediction_index])
+    }
+
+
+# --------------------------------------------------
+# Galaxy morphology classification service (ResNet18)
+# --------------------------------------------------
 
 transform_eval = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -12,6 +72,7 @@ transform_eval = transforms.Compose([
         std=[0.229, 0.224, 0.225]
     )
 ])
+
 
 class PredictorService:
     def __init__(self, model, class_names: List[str], device: torch.device = None):

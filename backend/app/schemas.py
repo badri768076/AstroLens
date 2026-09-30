@@ -1,12 +1,55 @@
 from typing import Dict, List, Optional, Any
 from pydantic import BaseModel, Field
 
+
+class AstronomicalClassification(BaseModel):
+    class_: str = Field(
+        ...,
+        alias="class",
+        description="Predicted astronomical object class"
+    )
+    confidence: float = Field(
+        ...,
+        description="Classification confidence score"
+    )
+
+    model_config = {
+        "populate_by_name": True
+    }
+
+
+class ObjectIdentification(BaseModel):
+    object: Optional[str] = None
+    similarity: Optional[float] = None
+
+
+class ScientificInformation(BaseModel):
+    name: Optional[str] = None
+    catalog_id: Optional[str] = None
+    type: Optional[str] = None
+    ra: Optional[float] = None
+    dec: Optional[float] = None
+
+class VisualizationData(BaseModel):
+    object_name: Optional[str] = None
+    ra: Optional[float] = None
+    dec: Optional[float] = None
+    catalog_id: Optional[str] = None
+
+
+class AnalyzeResponse(BaseModel):
+    classification: AstronomicalClassification
+    identification: ObjectIdentification
+    scientific_information: Optional[ScientificInformation] = None
+    visualization: Optional[VisualizationData] = None
+
 class PredictionResult(BaseModel):
     class_id: int
     class_name: str
     confidence: float
     probabilities: Dict[str, float]
     task: str = "4-class galaxy morphology classification"
+
 
 class SimilarObjectItem(BaseModel):
     rank: int
@@ -16,8 +59,12 @@ class SimilarObjectItem(BaseModel):
     similarity: float
     dataset: str = "GalaxyMNIST"
 
+
 class AnomalyResult(BaseModel):
-    anomaly_score: float = Field(..., description="Calibrated anomaly score in [0.0, 1.0]")
+    anomaly_score: float = Field(
+        ...,
+        description="Calibrated anomaly score in [0.0, 1.0]"
+    )
     distance_to_centroid: float
     reference_mean_distance: float
     threshold_p95: float
@@ -27,10 +74,12 @@ class AnomalyResult(BaseModel):
     interpretation: str
     scientific_disclaimer: str
 
+
 class GradCamResult(BaseModel):
     heatmap_base64: str
     overlay_base64: str
     target_layer: str
+
 
 class ModelMetadata(BaseModel):
     model_id: str
@@ -51,6 +100,7 @@ class ModelMetadata(BaseModel):
     weighted_f1: float
     confusion_matrix: List[List[int]]
 
+
 class FullAnalysisResponse(BaseModel):
     filename: Optional[str] = None
     prediction: PredictionResult
@@ -59,6 +109,7 @@ class FullAnalysisResponse(BaseModel):
     gradcam: GradCamResult
     model_info: Dict[str, Any]
     dataset_info: Dict[str, Any]
+
 
 class DatasetSummary(BaseModel):
     dataset_id: str

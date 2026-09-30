@@ -7,70 +7,77 @@ import { useEffect, useState } from "react";
 export default function Navbar() {
   const pathname = usePathname();
   const [backendStatus, setBackendStatus] = useState<"checking" | "online" | "offline">("checking");
-  const [deviceInfo, setDeviceInfo] = useState<string>("Detecting");
+  const [deviceInfo, setDeviceInfo] = useState<string>("STANDBY");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
     fetch("http://localhost:8000/health")
       .then((res) => {
         if (res.ok) return res.json();
         throw new Error();
       })
       .then((data) => {
-        setBackendStatus("online");
-        setDeviceInfo(data.gpu_name || data.device || "CUDA");
+        if (isMounted) {
+          setBackendStatus("online");
+          setDeviceInfo(data.gpu_name || data.device || "GPU ENGINE");
+        }
       })
       .catch(() => {
-        setBackendStatus("offline");
-        setDeviceInfo("Offline Demo Mode");
+        if (isMounted) {
+          setBackendStatus("offline");
+          setDeviceInfo("STANDBY");
+        }
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const navLinks = [
-    { href: "/", label: "Overview" },
-    { href: "/analyze", label: "Analyze Pipeline" },
-    { href: "/models", label: "Model Performance" },
-    { href: "/datasets", label: "Dataset Explorer" },
+    { href: "/", label: "Explore" },
+    { href: "/analyze", label: "Analyze Workstation" },
+    { href: "/models", label: "Instruments" },
+    { href: "/datasets", label: "Archive" },
     { href: "/methodology", label: "Methodology" },
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-cyan-950/60 bg-[#07090e]/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+    <header className="sticky top-0 z-50 border-b border-zinc-800 bg-[#020306]/95 backdrop-blur-md">
+      <div className="max-w-[1680px] mx-auto flex items-center justify-between px-4 py-2 text-xs font-mono">
         {/* Brand */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-500/30 bg-cyan-950/40 text-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.15)] group-hover:border-cyan-400/60 transition">
-            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="3" />
-              <path d="M12 2v3m0 14v3M2 12h3m14 0h3m-3.5-6.5-2.1 2.1m-8.8 8.8-2.1 2.1m0-13 2.1 2.1m8.8 8.8 2.1 2.1" />
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="w-7 h-7 border border-zinc-700 bg-zinc-900/60 flex items-center justify-center text-cyan-400 group-hover:border-cyan-400 transition">
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+              <circle cx="12" cy="12" r="8" strokeOpacity="0.6" />
+              <circle cx="12" cy="12" r="3" fill="currentColor" fillOpacity="0.2" />
+              <path d="M12 2v3M12 19v3M2 12h3M19 12h3" strokeLinecap="round" />
             </svg>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-bold tracking-tight text-white group-hover:text-cyan-300 transition">
-                AstroLens
-              </span>
-              <span className="rounded bg-cyan-950/80 px-1.5 py-0.5 text-[10px] font-mono font-medium tracking-wide text-cyan-400 border border-cyan-800/40">
-                DL v1.0
-              </span>
-            </div>
-            <p className="text-[11px] text-zinc-400 tracking-wider font-mono">
-              Deep Learning Astronomy Lab
-            </p>
+
+          <div className="flex items-center gap-2">
+            <span className="font-bold tracking-widest text-white uppercase text-sm group-hover:text-cyan-300 transition">
+              ASTROLENS
+            </span>
+            <span className="text-[10px] text-zinc-500 uppercase hidden sm:inline">
+              // OBSERVATION AI
+            </span>
           </div>
         </Link>
 
-        {/* Links */}
-        <nav className="hidden md:flex items-center gap-1 rounded-xl border border-zinc-800/80 bg-zinc-950/50 p-1">
+        {/* Desktop Nav Links */}
+        <nav className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`rounded-lg px-3.5 py-1.5 text-xs font-medium tracking-wide transition ${
+                className={`px-3 py-1.5 transition uppercase tracking-wider text-[11px] ${
                   isActive
-                    ? "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30"
-                    : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900/60"
+                    ? "text-cyan-300 border-b-2 border-cyan-400 font-bold bg-white/[0.02]"
+                    : "text-zinc-400 hover:text-white"
                 }`}
               >
                 {link.label}
@@ -79,31 +86,78 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* System Status Pill */}
-        <div className="flex items-center gap-2.5">
-          <div className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/80 px-3 py-1 text-xs">
+        {/* Telemetry Status & Action */}
+        <div className="hidden sm:flex items-center gap-3">
+          <div className="flex items-center gap-2 px-2.5 py-1 border border-zinc-800 bg-[#04060c] text-[10px]">
             <span
-              className={`h-2 w-2 rounded-full ${
+              className={`w-1.5 h-1.5 rounded-full ${
                 backendStatus === "online"
-                  ? "bg-emerald-400 shadow-[0_0_8px_#34d399]"
+                  ? "bg-emerald-400 shadow-[0_0_6px_#34d399]"
                   : backendStatus === "checking"
                   ? "bg-amber-400 animate-pulse"
-                  : "bg-zinc-500"
+                  : "bg-zinc-600"
               }`}
             />
-            <span className="text-[11px] font-mono text-zinc-300">
-              {backendStatus === "online" ? `API: ${deviceInfo}` : backendStatus === "checking" ? "Connecting API..." : "API Standby"}
+            <span className="text-zinc-400">
+              {backendStatus === "online" ? `FASTAPI: ${deviceInfo}` : "STANDBY"}
             </span>
           </div>
 
           <Link
             href="/analyze"
-            className="rounded-lg bg-cyan-500 hover:bg-cyan-400 px-3.5 py-1.5 text-xs font-semibold text-zinc-950 shadow-[0_0_15px_rgba(6,182,212,0.3)] transition"
+            className="px-3.5 py-1 border border-cyan-400 bg-cyan-500 hover:bg-cyan-400 text-zinc-950 font-bold uppercase tracking-wider transition text-[11px]"
           >
-            Launch Analysis
+            Stage Observation
           </Link>
         </div>
+
+        {/* Mobile Toggle */}
+        <div className="flex items-center md:hidden gap-2">
+          <Link
+            href="/analyze"
+            className="px-2 py-0.5 border border-cyan-400 bg-cyan-500 text-zinc-950 font-bold text-[10px] uppercase"
+          >
+            Analyze
+          </Link>
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle Navigation"
+            className="p-1.5 border border-zinc-800 text-zinc-400 hover:text-white"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              {mobileMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Drawer */}
+      {mobileMenuOpen && (
+        <div className="border-t border-zinc-800 bg-[#03060c] px-4 py-3 md:hidden">
+          <nav className="flex flex-col gap-2 font-mono text-xs">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`py-1.5 px-2 transition ${
+                    isActive ? "text-cyan-300 font-bold bg-white/5" : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+      )}
     </header>
   );
 }

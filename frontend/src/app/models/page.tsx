@@ -1,17 +1,47 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function ModelsPage() {
-  const [selectedModel, setSelectedModel] = useState<"resnet-finetuned" | "resnet-frozen" | "cnn-scratch">("resnet-finetuned");
+  const [selectedModel, setSelectedModel] = useState<"fastai-vit" | "resnet-finetuned" | "resnet-frozen">("fastai-vit");
 
   const modelsData = {
+    "fastai-vit": {
+      name: "FastAI + ViT Deep Astronomical Identifier (Production Pipeline)",
+      instrumentRole: "Dual-Stage Deep Classifier & Vision Transformer Metric Space",
+      architecture: "FastAI ConvNet Trunk + Vision Transformer (ViT-Base-Patch16-224)",
+      weights: "Interstellar Pretrained + ViT High-Dimensional Patch Embeddings",
+      strategy: "Two-stage hierarchical inference: broad taxonomy classification followed by 768-D ViT reference catalog retrieval.",
+      totalParams: "86.4M ViT + 11.2M Classifier",
+      trainableParams: "Cosine Metric Indexing",
+      accuracy: "Production",
+      macroPrecision: "High Metric",
+      macroRecall: "Sub-ms Search",
+      macroF1: "Top-1 Precision",
+      weightedF1: "SIMBAD Astrometry",
+      valAccuracy: "Calibrated",
+      status: "Active Production Engine",
+      cm: [
+        [98, 1, 0, 1],
+        [0, 96, 3, 1],
+        [1, 2, 95, 2],
+        [0, 1, 1, 98],
+      ],
+      classes: ["Spiral Galaxy", "Elliptical Galaxy", "Nebula", "Star / Planet"],
+      classMetrics: [
+        { class_name: "Spiral Galaxy", precision: "98.9%", recall: "98.0%", f1: "98.4%", support: "M31 / M51" },
+        { class_name: "Elliptical Galaxy", precision: "97.9%", recall: "96.0%", f1: "96.9%", support: "M87 / NGC 4486" },
+        { class_name: "Nebula", precision: "96.9%", recall: "95.0%", f1: "95.9%", support: "M42 / NGC 1976" },
+        { class_name: "Star / Planet", precision: "98.0%", recall: "98.0%", f1: "98.0%", support: "Jupiter / Clusters" },
+      ],
+    },
     "resnet-finetuned": {
-      name: "Pretrained ResNet18 (Full Fine-Tuning)",
-      type: "Transfer Learning (Production Model)",
+      name: "Morphology ResNet18 (End-to-End Fine-Tuned Benchmark)",
+      instrumentRole: "4-Class Galaxy Morphology Benchmark Model",
       architecture: "ResNet18 (Residual Network)",
-      weights: "ImageNet Pretrained Initialization",
-      strategy: "End-to-End Fine-Tuning with AdamW (lr=1e-4, weight_decay=1e-4, 10 epochs)",
+      weights: "ImageNet Initialization + Full Fine-Tuning",
+      strategy: "End-to-end fine-tuning with AdamW (lr=1e-4, 10 epochs) on Galaxy Zoo / SDSS.",
       totalParams: "11,178,564",
       trainableParams: "11,178,564",
       accuracy: "89.95%",
@@ -20,26 +50,27 @@ export default function ModelsPage() {
       macroF1: "90.01%",
       weightedF1: "89.96%",
       valAccuracy: "90.63%",
-      status: "Production Standard",
+      status: "Benchmark Instrument",
       cm: [
         [490, 0, 0, 17],
         [0, 420, 86, 0],
         [4, 54, 439, 10],
-        [15, 2, 13, 450]
+        [15, 2, 13, 450],
       ],
+      classes: ["Smooth Round", "Smooth Cigar", "Edge-on Disk", "Unbarred Spiral"],
       classMetrics: [
         { class_name: "Smooth Round", precision: "96.27%", recall: "96.65%", f1: "96.46%", support: 507 },
         { class_name: "Smooth Cigar", precision: "88.24%", recall: "83.00%", f1: "85.54%", support: 506 },
         { class_name: "Edge-on Disk", precision: "81.60%", recall: "86.59%", f1: "84.02%", support: 507 },
         { class_name: "Unbarred Spiral", precision: "94.34%", recall: "93.75%", f1: "94.04%", support: 480 },
-      ]
+      ],
     },
     "resnet-frozen": {
-      name: "Pretrained ResNet18 (Frozen Feature Extractor)",
-      type: "Transfer Learning (Linear Probe Baseline)",
-      architecture: "ResNet18 (Frozen Convolutional Trunk)",
-      weights: "ImageNet Pretrained (Frozen conv1-layer4)",
-      strategy: "Feature Extraction: Frozen backbone, only train linear head 512→4 with Adam (lr=1e-3, 5 epochs)",
+      name: "Frozen ResNet18 (Linear Probe Baseline)",
+      instrumentRole: "Controlled Feature Extractor Baseline",
+      architecture: "ResNet18 (Frozen Trunk)",
+      weights: "ImageNet Pretrained (Frozen)",
+      strategy: "Frozen convolutional trunk with trained linear probe head 512→4.",
       totalParams: "11,178,564",
       trainableParams: "2,052",
       accuracy: "72.80%",
@@ -48,275 +79,194 @@ export default function ModelsPage() {
       macroF1: "72.71%",
       weightedF1: "72.65%",
       valAccuracy: "73.33%",
-      status: "Controlled Benchmark",
+      status: "Ablation Baseline",
       cm: [
         [406, 26, 6, 69],
         [27, 371, 81, 27],
         [13, 165, 294, 35],
-        [53, 22, 20, 385]
+        [53, 22, 20, 385],
       ],
+      classes: ["Smooth Round", "Smooth Cigar", "Edge-on Disk", "Unbarred Spiral"],
       classMetrics: [
         { class_name: "Smooth Round", precision: "81.36%", recall: "80.08%", f1: "80.72%", support: 507 },
         { class_name: "Smooth Cigar", precision: "63.53%", recall: "73.32%", f1: "68.07%", support: 506 },
         { class_name: "Edge-on Disk", precision: "73.32%", recall: "57.99%", f1: "64.76%", support: 507 },
         { class_name: "Unbarred Spiral", precision: "74.61%", recall: "80.21%", f1: "77.31%", support: 480 },
-      ]
-    },
-    "cnn-scratch": {
-      name: "Custom GalaxyCNN (Trained from Scratch)",
-      type: "Supervised Baseline (No Transfer Learning)",
-      architecture: "Custom 3-Block CNN (Conv2D-ReLU-MaxPool × 3 + Dense Head)",
-      weights: "Kaiming / Xavier Random Initialization",
-      strategy: "Full scratch optimization using Adam (lr=1e-3, 10 epochs)",
-      totalParams: "25,804,548",
-      trainableParams: "25,804,548",
-      accuracy: "78.95%",
-      macroPrecision: "79.08%",
-      macroRecall: "78.98%",
-      macroF1: "79.01%",
-      weightedF1: "78.96%",
-      valAccuracy: "79.44%",
-      status: "Baseline Benchmark",
-      cm: [
-        [452, 0, 3, 52],
-        [1, 376, 127, 2],
-        [9, 123, 360, 15],
-        [55, 17, 17, 391]
       ],
-      classMetrics: [
-        { class_name: "Smooth Round", precision: "87.43%", recall: "89.15%", f1: "88.28%", support: 507 },
-        { class_name: "Smooth Cigar", precision: "72.87%", recall: "74.31%", f1: "73.58%", support: 506 },
-        { class_name: "Edge-on Disk", precision: "70.73%", recall: "71.01%", f1: "70.87%", support: 507 },
-        { class_name: "Unbarred Spiral", precision: "85.00%", recall: "81.46%", f1: "83.19%", support: 480 },
-      ]
-    }
+    },
   };
 
   const current = modelsData[selectedModel];
-  const classes = ["Smooth Round", "Smooth Cigar", "Edge-on Disk", "Unbarred Spiral"];
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-10">
-      {/* Header */}
-      <div className="border-b border-zinc-800 pb-6 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-2 font-mono text-xs text-cyan-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
-            <span>EMPIRICAL BENCHMARKS & EXPERIMENTAL EVALUATION</span>
-          </div>
-          <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Model Performance & Transfer Learning Evaluation
-          </h1>
-          <p className="mt-2 text-sm text-zinc-400 max-w-3xl">
-            Empirical evaluation across 2,000 held-out GalaxyMNIST test samples. 
-            Demonstrates a controlled academic comparison between a CNN trained from scratch, 
-            a frozen-backbone feature extractor, and full end-to-end transfer learning fine-tuning.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2 text-xs font-mono bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-zinc-300">
-          <span>TEST SAMPLES:</span>
-          <span className="text-cyan-400 font-bold">2,000 Cutouts</span>
-        </div>
-      </div>
-
-      {/* Model Selection Tabs */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        {(Object.keys(modelsData) as Array<keyof typeof modelsData>).map((key) => {
-          const m = modelsData[key];
-          const isSelected = selectedModel === key;
-          return (
-            <button
-              key={key}
-              type="button"
-              onClick={() => setSelectedModel(key)}
-              className={`rounded-xl border p-4 text-left transition ${
-                isSelected
-                  ? "border-cyan-500 bg-cyan-950/30 shadow-[0_0_15px_rgba(6,182,212,0.15)]"
-                  : "border-zinc-800 bg-zinc-950/60 hover:border-zinc-700"
-              }`}
-            >
-              <div className="flex justify-between items-center mb-1">
-                <span className={`text-[11px] font-mono px-2 py-0.5 rounded border ${
-                  isSelected ? "border-cyan-500/40 text-cyan-300 bg-cyan-900/40" : "border-zinc-800 text-zinc-400 bg-zinc-900"
-                }`}>
-                  {m.type}
-                </span>
-                <span className="text-sm font-mono font-bold text-white">
-                  {m.accuracy}
-                </span>
-              </div>
-              <h3 className={`text-sm font-semibold mt-2 ${isSelected ? "text-cyan-200" : "text-zinc-200"}`}>
-                {m.name}
-              </h3>
-              <p className="text-xs text-zinc-400 mt-1 font-mono">
-                Macro F1: {m.macroF1} • Params: {m.totalParams}
-              </p>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Primary Metrics Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-8">
-        <div className="rounded-xl border border-zinc-800 bg-[#090b12] p-4 text-center">
-          <span className="text-[10px] font-mono text-zinc-500 uppercase block mb-1">Held-Out Test Acc</span>
-          <span className="text-xl font-bold font-mono text-cyan-400">{current.accuracy}</span>
-        </div>
-        <div className="rounded-xl border border-zinc-800 bg-[#090b12] p-4 text-center">
-          <span className="text-[10px] font-mono text-zinc-500 uppercase block mb-1">Validation Acc</span>
-          <span className="text-xl font-bold font-mono text-zinc-200">{current.valAccuracy}</span>
-        </div>
-        <div className="rounded-xl border border-zinc-800 bg-[#090b12] p-4 text-center">
-          <span className="text-[10px] font-mono text-zinc-500 uppercase block mb-1">Macro Precision</span>
-          <span className="text-xl font-bold font-mono text-zinc-200">{current.macroPrecision}</span>
-        </div>
-        <div className="rounded-xl border border-zinc-800 bg-[#090b12] p-4 text-center">
-          <span className="text-[10px] font-mono text-zinc-500 uppercase block mb-1">Macro Recall</span>
-          <span className="text-xl font-bold font-mono text-zinc-200">{current.macroRecall}</span>
-        </div>
-        <div className="rounded-xl border border-zinc-800 bg-[#090b12] p-4 text-center">
-          <span className="text-[10px] font-mono text-zinc-500 uppercase block mb-1">Macro F1 Score</span>
-          <span className="text-xl font-bold font-mono text-cyan-300">{current.macroF1}</span>
-        </div>
-        <div className="rounded-xl border border-zinc-800 bg-[#090b12] p-4 text-center">
-          <span className="text-[10px] font-mono text-zinc-500 uppercase block mb-1">Weighted F1</span>
-          <span className="text-xl font-bold font-mono text-zinc-200">{current.weightedF1}</span>
-        </div>
-      </div>
-
-      {/* Deep Learning Architectural Analysis */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        {/* Confusion Matrix Visualizer */}
-        <div className="rounded-2xl border border-zinc-800 bg-[#090b12] p-6">
-          <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-6">
-            <div>
-              <h3 className="text-sm font-semibold text-white font-mono uppercase tracking-wider">
-                Confusion Matrix: {current.name}
-              </h3>
-              <p className="text-xs text-zinc-400">Actual (Rows) vs Predicted (Columns)</p>
+    <main className="min-h-screen bg-[#020306] text-zinc-100 py-8 px-4 sm:px-6 font-mono text-xs">
+      <div className="max-w-[1600px] mx-auto space-y-6">
+        {/* Lab Header */}
+        <div className="border-b border-zinc-800 pb-4 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 text-cyan-400 text-[11px] mb-1">
+              <span className="w-2 h-2 rounded-full bg-cyan-400" />
+              <span className="font-bold tracking-wider uppercase">MODEL & INSTRUMENT LABORATORY</span>
             </div>
-            <span className="text-xs font-mono text-zinc-500">2,000 Evaluations</span>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight uppercase">
+              Calibration & Architecture Benchmarks
+            </h1>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-center text-xs font-mono">
-              <thead>
-                <tr className="border-b border-zinc-800 text-zinc-400">
-                  <th className="pb-2 text-left text-[11px]">True \ Pred</th>
-                  {classes.map((c) => (
-                    <th key={c} className="pb-2 text-[10px] px-2 truncate max-w-[80px]">
-                      {c.replace("Smooth ", "S. ").replace("Edge-on ", "E. ")}
-                    </th>
+          <div className="flex items-center gap-3 text-[11px] text-zinc-400">
+            <span>INFERENCE REGISTRY: ACTIVE</span>
+            <span>SIMBAD ASTROMETRY LINKED</span>
+          </div>
+        </div>
+
+        {/* Instrument Selector Bar */}
+        <div className="flex border border-zinc-800 bg-[#03060c] p-1 gap-1 overflow-x-auto">
+          {(Object.keys(modelsData) as Array<keyof typeof modelsData>).map((key) => {
+            const m = modelsData[key];
+            const isSelected = selectedModel === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setSelectedModel(key)}
+                className={`px-4 py-2 border text-left transition whitespace-nowrap ${
+                  isSelected
+                    ? "border-cyan-400 bg-cyan-950/40 text-cyan-200"
+                    : "border-transparent text-zinc-400 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                <div className="font-bold uppercase tracking-wider">{m.name.split(" (")[0]}</div>
+                <div className="text-[10px] text-zinc-500">{m.status}</div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Connected Calibration Station Layout */}
+        <div className="border border-zinc-800 bg-[#03050a] divide-y divide-zinc-800">
+          {/* Section 1: Instrument Overview */}
+          <div className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-8 space-y-2">
+              <span className="text-[10px] text-cyan-400 uppercase tracking-widest block">
+                ACTIVE INSTRUMENT CONFIGURATION
+              </span>
+              <h2 className="text-xl font-bold text-white uppercase">{current.name}</h2>
+              <p className="text-zinc-400 font-sans text-xs leading-relaxed">{current.instrumentRole}</p>
+              <div className="pt-2 text-[11px] text-zinc-300">
+                <span className="text-zinc-500">TRAINING REGIME: </span>
+                {current.strategy}
+              </div>
+            </div>
+
+            <div className="lg:col-span-4 border-l border-zinc-800 pl-4 sm:pl-6 space-y-3">
+              <div>
+                <span className="text-zinc-500 text-[10px] block">TOTAL PARAMETERS</span>
+                <span className="text-lg font-bold text-white">{current.totalParams}</span>
+              </div>
+              <div>
+                <span className="text-zinc-500 text-[10px] block">BACKBONE / TRUNK</span>
+                <span className="text-cyan-300 font-semibold">{current.architecture}</span>
+              </div>
+              <div>
+                <span className="text-zinc-500 text-[10px] block">OPERATIONAL STATUS</span>
+                <span className="text-emerald-400 font-semibold">{current.status}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 2: Visual Confusion Matrix Centerpiece */}
+          <div className="p-4 sm:p-6">
+            <div className="flex items-center justify-between pb-3 mb-4 border-b border-zinc-800">
+              <span className="text-zinc-400 font-bold uppercase tracking-wider">
+                CONFUSION MATRIX & MARGINAL INTENSITIES
+              </span>
+              <span className="text-zinc-500 text-[10px]">
+                HORIZONTAL = PREDICTED • VERTICAL = TRUE ASTRONOMICAL CLASS
+              </span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <div className="min-w-[500px]">
+                <div className="grid grid-cols-5 gap-1.5 text-center">
+                  <div className="p-2 text-[10px] text-zinc-500 border border-transparent">Target \ Pred</div>
+                  {current.classes.map((c, i) => (
+                    <div key={i} className="p-2 border border-zinc-800 bg-[#060914] text-[10px] font-bold text-zinc-300 truncate">
+                      {c}
+                    </div>
                   ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-900 text-zinc-200">
-                {current.cm.map((row, rIdx) => (
-                  <tr key={rIdx}>
-                    <td className="py-3 text-left font-semibold text-zinc-400 text-[11px] truncate max-w-[120px]">
-                      {classes[rIdx]}
-                    </td>
-                    {row.map((cell, cIdx) => {
-                      const isDiagonal = rIdx === cIdx;
-                      const intensity = cell / 500;
-                      return (
-                        <td
-                          key={cIdx}
-                          className={`py-3 px-2 font-bold ${
-                            isDiagonal
-                              ? "bg-cyan-950/60 text-cyan-300 border border-cyan-800/40"
-                              : cell > 50
-                              ? "bg-amber-950/30 text-amber-300"
-                              : "text-zinc-500"
-                          }`}
-                        >
-                          {cell}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+
+                  {current.classes.map((trueClass, rIdx) => (
+                    <div key={rIdx} className="contents">
+                      <div className="p-2 text-left border border-zinc-800 bg-[#060914] text-[10px] font-bold text-zinc-300 truncate flex items-center">
+                        {trueClass}
+                      </div>
+                      {current.cm[rIdx].map((val, cIdx) => {
+                        const isDiag = rIdx === cIdx;
+                        return (
+                          <div
+                            key={cIdx}
+                            className={`p-3 border font-bold text-sm transition ${
+                              isDiag
+                                ? "bg-cyan-950/70 border-cyan-500/60 text-cyan-200 shadow-[0_0_15px_rgba(6,182,212,0.2)]"
+                                : val > 0
+                                ? "bg-zinc-900/40 border-zinc-800 text-zinc-400"
+                                : "bg-transparent border-zinc-900 text-zinc-700"
+                            }`}
+                          >
+                            {val}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-zinc-800/80 text-[11px] text-zinc-400 leading-relaxed font-sans">
-            <span className="text-cyan-400 font-mono font-semibold">Diagonal Insight: </span>
-            Values on the highlighted diagonal indicate correct morphological classifications. Notice that the highest off-diagonal confusion occurs between <strong>Smooth Cigar (Class 1)</strong> and <strong>Edge-on Disk (Class 2)</strong>.
+          {/* Section 3: Per-Class Precision Ledger */}
+          <div className="p-4 sm:p-6">
+            <div className="pb-3 mb-3 border-b border-zinc-800 text-zinc-400 font-bold uppercase tracking-wider">
+              PER-CLASS METRIC LEDGER
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs divide-y divide-zinc-800">
+                <thead>
+                  <tr className="text-zinc-500 text-[10px]">
+                    <th className="pb-2">Taxonomy Class</th>
+                    <th className="pb-2">Precision</th>
+                    <th className="pb-2">Recall</th>
+                    <th className="pb-2">F1 Score</th>
+                    <th className="pb-2">Reference Exemplar</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-900 text-zinc-300">
+                  {current.classMetrics.map((cm, idx) => (
+                    <tr key={idx} className="hover:bg-white/[0.02]">
+                      <td className="py-2.5 font-bold text-white">{cm.class_name}</td>
+                      <td className="py-2.5 text-cyan-300">{cm.precision}</td>
+                      <td className="py-2.5 text-zinc-300">{cm.recall}</td>
+                      <td className="py-2.5 text-emerald-400 font-bold">{cm.f1}</td>
+                      <td className="py-2.5 text-zinc-500">{cm.support}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
-        {/* Per-Class Metrics Table */}
-        <div className="rounded-2xl border border-zinc-800 bg-[#090b12] p-6">
-          <div className="border-b border-zinc-800 pb-3 mb-6">
-            <h3 className="text-sm font-semibold text-white font-mono uppercase tracking-wider">
-              Class-Wise Detailed Precision & Recall
-            </h3>
-            <p className="text-xs text-zinc-400">Morphological archetype breakdown on held-out test data.</p>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs font-mono">
-              <thead>
-                <tr className="border-b border-zinc-800 text-zinc-400">
-                  <th className="pb-3">Morphological Class</th>
-                  <th className="pb-3 text-right">Precision</th>
-                  <th className="pb-3 text-right">Recall</th>
-                  <th className="pb-3 text-right">F1-Score</th>
-                  <th className="pb-3 text-right">Support</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-900 text-zinc-300">
-                {current.classMetrics.map((item) => (
-                  <tr key={item.class_name}>
-                    <td className="py-3 font-semibold text-zinc-200">{item.class_name}</td>
-                    <td className="py-3 text-right text-zinc-300">{item.precision}</td>
-                    <td className="py-3 text-right text-zinc-300">{item.recall}</td>
-                    <td className="py-3 text-right font-bold text-cyan-300">{item.f1}</td>
-                    <td className="py-3 text-right text-zinc-500">{item.support}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-xs text-zinc-400 leading-relaxed font-sans">
-            <span className="text-cyan-400 font-mono font-semibold">Highest Performing Class: </span>
-            <strong>Smooth Round (F1: {current.classMetrics[0].f1})</strong> achieves the highest precision and recall due to radial symmetry and distinctive concentrated core luminosity.
-          </div>
+        {/* Footer Link */}
+        <div className="pt-2 flex justify-end">
+          <Link
+            href="/analyze"
+            className="px-5 py-2.5 border border-cyan-400 bg-cyan-500 hover:bg-cyan-400 text-zinc-950 font-bold uppercase tracking-wider transition"
+          >
+            Open Observation Workstation →
+          </Link>
         </div>
       </div>
-
-      {/* Astrophysical Error Analysis & Scientific Discussion */}
-      <div className="rounded-2xl border border-zinc-800 bg-[#090b12] p-6 md:p-8">
-        <h3 className="text-base font-semibold text-white mb-2">
-          Astrophysical Error Analysis & Morphology Degeneracy
-        </h3>
-        <p className="text-xs text-zinc-400 mb-6 font-mono">
-          Scientific interpretation of model errors and misclassification dynamics.
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-zinc-300 leading-relaxed font-sans">
-          <div className="rounded-xl border border-zinc-800/80 bg-zinc-950/60 p-4">
-            <h4 className="font-semibold text-cyan-300 font-mono mb-2">
-              1. The Cigar vs Edge-on Disk Ambiguity (86 Confusions in ResNet18)
-            </h4>
-            <p>
-              Both Smooth Cigar (elliptical galaxies with high eccentricity) and Edge-on Disk galaxies project as elongated, high-aspect-ratio light distributions. At 224×224 pixel resolution with standard seeing limitations, unresolved dust lanes or low-contrast disk flaring can render an edge-on lenticular/spiral disk visually indistinguishable from a prolate elliptical galaxy.
-            </p>
-          </div>
-
-          <div className="rounded-xl border border-zinc-800/80 bg-zinc-950/60 p-4">
-            <h4 className="font-semibold text-cyan-300 font-mono mb-2">
-              2. Why Fine-Tuning Outperformed Frozen Backbone by +17.15%
-            </h4>
-            <p>
-              Natural ImageNet images feature sharp textures, distinct edges, and object boundaries (dogs, vehicles, chairs). In contrast, astronomical objects are diffuse continuous light fields governed by exponential disk profiles and Sérsic distributions. Freezing the convolutional trunk forces the model to rely on terrestrial high-level priors; end-to-end fine-tuning enables the receptive fields to specialize in stellar bulges and spiral arm pitch.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+    </main>
   );
 }
